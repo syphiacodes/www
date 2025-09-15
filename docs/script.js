@@ -1,1 +1,96 @@
-const e=e=>{let t=classNames("card-wrapper",{selected:e.selected});return React.createElement("div",{className:t,style:(()=>{let t={left:`calc(${20*e.index}% - ${20*e.index}px)`,zIndex:e.index};return e.selected&&(t.left="50%",t.zIndex=10),t})(),onClick:()=>{e.selected||e.select(e.id)}},React.createElement("div",{className:"card"},React.createElement("div",{className:"icon"},React.createElement("i",{className:e.icon})),e.selected?React.createElement("div",{className:"content"},React.createElement("div",{className:"title"},React.createElement("h1",null,e.title)),React.createElement("div",{className:"text"},React.createElement("p",null,e.text)),React.createElement("button",{type:"button",className:"close-button",onClick:()=>{e.selected&&e.select()}},React.createElement("i",{className:"fas fa-times"}))):null))};ReactDOM.render(React.createElement((t=>{let a=[{id:1,icon:"far fa-user-circle",title:"factfile",text:"cass, 17, she/her, travels a significant amount, left-wing, dual-citizenship, wants to study architecture in finland, any more questions ask me on discord."},{id:2,icon:"far fa-question-circle",title:"about me",text:"i love music and really enjoy travelling to places i really shouldn't. i also enojy a dabble in the fine art of graphical design which involves me spending too much time designing ui interfaces (as you can see from this website)"},{id:3,icon:"fas fa-server",title:"discord server",text:"join if you dare: https://discord.gg/SvugUdNxxK (its not clickable sue me. its too hard for me to implement and all you got to do is copy and paste)"},{id:4,icon:"fas fa-train",title:"my travels",text:"you can see most of my travels and other stupid stuff i made as a child on my youtube: https://www.youtube.com/@syphia (more stuff coming soon but expect to wait a bit as i am mentally challenged"},{id:5,icon:"fas fa-link",title:"other links",text:"youtube:\nhttps://www.youtube.com/@syphia\ndiscord:\nhttps://discord.gg/SvugUdNxxK\nspotify:\nhttps://open.spotify.com/user/31ulwdc3tcyolpnyft7qequvhip4\nwebsite:\nhttps://www.syphia.repl.co/ (now mobile friendly)\ntwitch:\nhttps://www.twitch.tv/syphialive"}],[i,c]=React.useState(null),l=e=>{c(e?a.find((t=>t.id===e)):null)};return React.createElement("div",{id:"app"},React.createElement("div",{id:"cards-wrapper"},React.createElement("div",{id:"cards"},a.map(((t,a)=>React.createElement(e,{key:t.id,id:t.id,index:a,icon:t.icon,title:t.title,text:t.text,selected:i&&i.id===t.id,select:l}))))))}),null),document.getElementById("root"));
+document.addEventListener('DOMContentLoaded', () => {
+  class TextScramble {
+    constructor(el) {
+      this.el = el;
+      this.chars = '!<>-_\\/[]{}—=+*^?#________';
+      this.update = this.update.bind(this);
+    }
+
+    setText(newText) {
+      const oldText = this.el.innerText;
+      const length = Math.max(oldText.length, newText.length);
+      const promise = new Promise(resolve => (this.resolve = resolve));
+      this.queue = [];
+
+      for (let i = 0; i < length; i++) {
+        const from = oldText[i] || '';
+        const to = newText[i] || '';
+        const start = Math.floor(Math.random() * 40);
+        const end = start + Math.floor(Math.random() * 40);
+        this.queue.push({ from, to, start, end });
+      }
+
+      cancelAnimationFrame(this.frameRequest);
+      this.frame = 0;
+      this.update();
+      return promise;
+    }
+
+    update() {
+      let output = '';
+      let complete = 0;
+
+      for (let i = 0, n = this.queue.length; i < n; i++) {
+        let { from, to, start, end, char } = this.queue[i];
+        if (this.frame >= end) {
+          complete++;
+          output += to;
+        } else if (this.frame >= start) {
+          if (!char || Math.random() < 0.28) {
+            char = this.randomChar();
+            this.queue[i].char = char;
+          }
+          output += `<span class="dud">${char}</span>`;
+        } else {
+          output += from;
+        }
+      }
+
+      this.el.innerHTML = output;
+
+      if (complete === this.queue.length) {
+        this.resolve();
+      } else {
+        this.frameRequest = requestAnimationFrame(this.update);
+        this.frame++;
+      }
+    }
+
+    randomChar() {
+      return this.chars[Math.floor(Math.random() * this.chars.length)];
+    }
+
+    startContinuous(phrases, interval = 1600) {
+      let counter = 0;
+      const next = () => {
+        this.setText(phrases[counter]).then(() => {
+          setTimeout(next, interval);
+        });
+        counter = (counter + 1) % phrases.length;
+      };
+      next();
+    }
+  }
+
+  const phrases = [
+    'i found you.',
+    'but you were just a recording,',
+    'a looping shadow of your',
+    'former self.'
+  ];
+
+  const textEl = document.querySelector('.main-text');
+  if (textEl) {
+    const fx1 = new TextScramble(textEl);
+    fx1.startContinuous(phrases);
+  }
+
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (
+      (e.ctrlKey && ['u','U','c','C','s','S','a','A'].includes(e.key))
+    ) {
+      e.preventDefault();
+    }
+  });
+});
