@@ -6,8 +6,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   font-family: "VT323", monospace;
-  background: url("https://freight.cargo.site/w/1750/i/f6e5f965061517b246c62d581cb5b368cb9866c73fa2f62cf579ae40d0a7f6fd/europe---risograph---396-x-280---3mm-bleed.gif") 
-              no-repeat center center fixed;
+  background: url("cassbackground.jpg") no-repeat center center fixed;
   background-size: cover;
   -webkit-user-select: none;
   -moz-user-select: none;
