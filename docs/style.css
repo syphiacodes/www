@@ -59,13 +59,13 @@ h1 {
   bottom: 15px;
   right: 20px;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(0, 0, 0, 0.15);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .discreet-link:hover {
-  color: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 1);
 }
 
 @keyframes text-flicker {
